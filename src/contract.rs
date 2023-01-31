@@ -78,7 +78,7 @@ pub mod query {
 
         let bid_asset = BID_ASSET.load(deps.storage)?;
 
-        return Ok(BidResp {
+        Ok(BidResp {
             address: "".to_string(),
             bid: Coin { 
                 denom: bid_asset.denom, 
@@ -103,7 +103,7 @@ pub mod query {
 
         let bid_asset = BID_ASSET.load(deps.storage)?;
                 
-        return Ok(BidResp {
+        Ok(BidResp {
             address: "".to_string(),
             bid: Coin { 
                 denom: bid_asset.denom, 
@@ -150,7 +150,7 @@ pub mod exec {
                 }
                 BIDS.save(deps.storage, info.sender.clone(), &Coin {
                     denom: funds.denom.clone(),
-                    amount: amount,
+                    amount,
                 })?;
 
                 // Saving the highest bid without the commission deduction
@@ -179,7 +179,7 @@ pub mod exec {
 
                 Ok(resp)
             },
-            None => return Err(ContractError::InvalidDenomination {denom: asset.denom}),
+            None => Err(ContractError::InvalidDenomination {denom: asset.denom}),
         }
     }
 
@@ -241,7 +241,7 @@ pub mod exec {
             }
         }
 
-        let addr = receiver.unwrap_or(info.sender.clone().to_string());
+        let addr = receiver.unwrap_or(info.sender.to_string());
         match BIDS.may_load(deps.storage, info.sender)? {
             Some(bid) => {
 
